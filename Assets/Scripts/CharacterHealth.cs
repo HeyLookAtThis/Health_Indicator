@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using static UnityEngine.GraphicsBuffer;
 
 [RequireComponent(typeof(CharacterHealth))]
@@ -8,6 +9,7 @@ using static UnityEngine.GraphicsBuffer;
 public class CharacterHealth : MonoBehaviour
 {
     private static CharacterHealth Storage;
+    [SerializeField] private UnityEvent _changeValueInvent;
 
     private float _maxValue = 100.0f;
     private float _minValue = 0.0f;
@@ -28,6 +30,8 @@ public class CharacterHealth : MonoBehaviour
     public void Change(float changingValue)
     {
         CurrentValue += changingValue;
+
+        _changeValueInvent.Invoke();
 
         if (CurrentValue < _minValue)
             CurrentValue = _minValue;

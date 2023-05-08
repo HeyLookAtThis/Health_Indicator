@@ -7,19 +7,39 @@ using UnityEngine.UI;
 
 public class HealthDisplayer : MonoBehaviour
 {
-    [SerializeField] private float _speed = 20.0f;
+    [SerializeField] private float _speed;
+    [SerializeField] private float _seconds;
     [SerializeField] private CharacterHealth _health;
 
     private Slider _slider;
+    private Coroutine _valueChanger; 
 
-    void Start()
+    private void Start()
     {
         _slider = GetComponent<Slider>();
     }
 
-    private void FixedUpdate()
+    public void BeginChange()
     {
-        float targetValue = _health.CurrentValue;
-        _slider.value = Mathf.MoveTowards(_slider.value, targetValue, _speed * Time.fixedDeltaTime);
+        if (_valueChanger != null)
+            StopCoroutine(_valueChanger);
+
+        _valueChanger = StartCoroutine(ValueChanger());
+    }
+
+    private IEnumerator ValueChanger()
+    {
+        var waitTime = new WaitForSeconds(_seconds);
+
+        bool isRightValue = _health.CurrentValue == _slider.value;
+
+        while (isRightValue == false)
+        {
+            _slider.value = Mathf.MoveTowards(_slider.value, _health.CurrentValue, _speed);
+            yield return waitTime;
+        }
+
+        if (isRightValue)
+            yield break;
     }
 }
