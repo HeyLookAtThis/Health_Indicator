@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Slider))]
@@ -19,7 +20,17 @@ public class HealthDisplayer : MonoBehaviour
         _slider = GetComponent<Slider>();
     }
 
-    public void BeginChange()
+    public void OnEnable()
+    {
+        _health.OnChanged += BeginChange;
+    }
+
+    public void OnDisable()
+    {
+        _health.OnChanged -= BeginChange;
+    }
+
+    private void BeginChange()
     {
         if (_valueChanger != null)
             StopCoroutine(_valueChanger);
@@ -31,15 +42,13 @@ public class HealthDisplayer : MonoBehaviour
     {
         var waitTime = new WaitForSeconds(_seconds);
 
-        bool isRightValue = _health.CurrentValue == _slider.value;
-
-        while (isRightValue == false)
+        while (_health.CurrentValue != _slider.value)
         {
             _slider.value = Mathf.MoveTowards(_slider.value, _health.CurrentValue, _speed);
             yield return waitTime;
         }
 
-        if (isRightValue)
+        if (_health.CurrentValue == _slider.value)
             yield break;
     }
 }
