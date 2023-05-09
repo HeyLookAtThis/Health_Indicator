@@ -6,7 +6,7 @@ using static UnityEngine.GraphicsBuffer;
 
 public class CharacterHealth : MonoBehaviour
 {
-    [SerializeField] private UnityEvent _onChanged;
+    private UnityAction _onChangedValue;
 
     private float _maxValue = 100.0f;
     private float _minValue = 0.0f;
@@ -18,10 +18,10 @@ public class CharacterHealth : MonoBehaviour
         CurrentValue = _maxValue;
     }
 
-    public event UnityAction OnChanged
+    public event UnityAction Changed
     {
-        add => _onChanged.AddListener(value);
-        remove => _onChanged.RemoveListener(value);
+        add => _onChangedValue += value;
+        remove => _onChangedValue -= value;
     }
 
     public void Change(float changingValue)
@@ -33,6 +33,6 @@ public class CharacterHealth : MonoBehaviour
         else if(CurrentValue > _maxValue)
             CurrentValue = _maxValue;
 
-        _onChanged.Invoke();
+        _onChangedValue?.Invoke();
     }
 }

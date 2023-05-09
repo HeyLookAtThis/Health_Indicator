@@ -22,12 +22,12 @@ public class HealthDisplayer : MonoBehaviour
 
     public void OnEnable()
     {
-        _health.OnChanged += BeginChange;
+        _health.Changed += BeginChange;
     }
 
     public void OnDisable()
     {
-        _health.OnChanged -= BeginChange;
+        _health.Changed -= BeginChange;
     }
 
     private void BeginChange()
